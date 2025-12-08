@@ -7,7 +7,6 @@ namespace Bitsoftsolutions\FilamentReverbDoctor\Pages;
 use Filament\Pages\Page;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
-use Bitsoftsolutions\FilamentReverbDoctor\DTOs\DiagnosticResult;
 use Bitsoftsolutions\FilamentReverbDoctor\Services\DiagnosticService;
 
 class ReverbHealthDashboard extends Page
@@ -27,7 +26,8 @@ class ReverbHealthDashboard extends Page
     protected static ?string $slug = 'reverb-health';
 
     /**
-     * @var array<DiagnosticResult>
+     * Results stored as arrays for Livewire compatibility
+     * @var array<array{name: string, status: string, message: string, suggestion: ?string, details: array}>
      */
     public array $results = [];
 
@@ -66,22 +66,40 @@ class ReverbHealthDashboard extends Page
         $this->isLoading = true;
 
         $service = app(DiagnosticService::class);
-        $this->results = $service->runAllChecks();
-        $this->summary = $service->getSummary($this->results);
+        $dtoResults = $service->runAllChecks();
+
+        // Convert DTOs to arrays for Livewire compatibility
+        $this->results = array_map(fn ($result) => $result->toArray(), $dtoResults);
+        $this->summary = $service->getSummary($dtoResults);
         $this->hasRun = true;
 
         $this->isLoading = false;
 
-        if ($service->allPassed($this->results)) {
+        // Send appropriate notification
+        $failCount = $this->summary['fail'] ?? 0;
+        $warnCount = $this->summary['warn'] ?? 0;
+        $passCount = $this->summary['pass'] ?? 0;
+
+        if ($failCount > 0) {
             Notification::make()
-                ->title('All checks passed!')
-                ->success()
+                ->title('Diagnostics Complete')
+                ->body("{$failCount} check(s) failed. Review the suggestions below.")
+                ->danger()
+                ->duration(5000)
+                ->send();
+        } elseif ($warnCount > 0) {
+            Notification::make()
+                ->title('Diagnostics Complete')
+                ->body("{$passCount} passed with {$warnCount} warning(s).")
+                ->warning()
+                ->duration(5000)
                 ->send();
         } else {
-            $failCount = $this->summary['fail'] ?? 0;
             Notification::make()
-                ->title("{$failCount} check(s) failed")
-                ->danger()
+                ->title('All checks passed!')
+                ->body('Your Reverb configuration looks healthy.')
+                ->success()
+                ->duration(5000)
                 ->send();
         }
     }

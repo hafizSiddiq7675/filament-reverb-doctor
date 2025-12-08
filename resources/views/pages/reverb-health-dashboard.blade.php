@@ -59,21 +59,37 @@
                         </thead>
                         <tbody>
                             @foreach($results as $result)
+                                @php
+                                    $statusColor = match($result['status']) {
+                                        'pass' => 'success',
+                                        'fail' => 'danger',
+                                        'warn' => 'warning',
+                                        'skip' => 'gray',
+                                        default => 'gray',
+                                    };
+                                    $statusLabel = match($result['status']) {
+                                        'pass' => 'Pass',
+                                        'fail' => 'Fail',
+                                        'warn' => 'Warning',
+                                        'skip' => 'Skip',
+                                        default => 'Unknown',
+                                    };
+                                @endphp
                                 <tr class="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900">
                                     <td class="py-3 px-4">
-                                        <x-filament::badge :color="$result->status->getColor()">
-                                            {{ $result->status->getLabel() }}
+                                        <x-filament::badge :color="$statusColor">
+                                            {{ $statusLabel }}
                                         </x-filament::badge>
                                     </td>
                                     <td class="py-3 px-4 font-medium text-gray-900 dark:text-gray-100">
-                                        {{ $result->name }}
+                                        {{ $result['name'] }}
                                     </td>
                                     <td class="py-3 px-4 text-gray-600 dark:text-gray-400">
-                                        {{ $result->message }}
+                                        {{ $result['message'] }}
                                     </td>
                                     @if(config('filament-reverb-doctor.appearance.show_suggestions', true))
                                         <td class="py-3 px-4 text-gray-500 dark:text-gray-500">
-                                            {{ $result->suggestion ?? '-' }}
+                                            {{ $result['suggestion'] ?? '-' }}
                                         </td>
                                     @endif
                                 </tr>

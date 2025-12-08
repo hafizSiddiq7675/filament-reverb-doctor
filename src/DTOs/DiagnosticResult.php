@@ -19,15 +19,15 @@ final class DiagnosticResult
     public static function fromCliResult(\Bitsoftsolutions\LaravelReverbDoctor\Results\DiagnosticResult $cliResult): self
     {
         $status = match ($cliResult->status->value) {
-            'pass' => CheckStatus::PASS,
-            'fail' => CheckStatus::FAIL,
-            'warn' => CheckStatus::WARN,
-            'skip' => CheckStatus::SKIP,
+            'PASS' => CheckStatus::PASS,
+            'FAIL' => CheckStatus::FAIL,
+            'WARN' => CheckStatus::WARN,
+            'SKIP' => CheckStatus::SKIP,
             default => CheckStatus::SKIP,
         };
 
         return new self(
-            name: $cliResult->name,
+            name: $cliResult->checkName,
             status: $status,
             message: $cliResult->message,
             suggestion: $cliResult->suggestion,

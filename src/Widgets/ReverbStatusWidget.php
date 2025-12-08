@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Bitsoftsolutions\FilamentReverbDoctor\Widgets;
 
 use Filament\Widgets\Widget;
-use Bitsoftsolutions\FilamentReverbDoctor\DTOs\DiagnosticResult;
+use Filament\Notifications\Notification;
 use Bitsoftsolutions\FilamentReverbDoctor\Services\DiagnosticService;
 
 class ReverbStatusWidget extends Widget
@@ -17,13 +17,15 @@ class ReverbStatusWidget extends Widget
     protected int | string | array $columnSpan = 'full';
 
     /**
-     * @var array<DiagnosticResult>
+     * Results stored as arrays for Livewire compatibility
      */
     public array $results = [];
 
     public array $summary = [];
 
     public bool $hasRun = false;
+
+    public bool $isLoading = false;
 
     public static function canView(): bool
     {
@@ -37,10 +39,41 @@ class ReverbStatusWidget extends Widget
 
     public function runQuickCheck(): void
     {
+        $this->isLoading = true;
+
         $service = app(DiagnosticService::class);
-        $this->results = $service->runAllChecks();
-        $this->summary = $service->getSummary($this->results);
+        $dtoResults = $service->runAllChecks();
+
+        // Convert DTOs to arrays for Livewire compatibility
+        $this->results = array_map(fn ($result) => $result->toArray(), $dtoResults);
+        $this->summary = $service->getSummary($dtoResults);
         $this->hasRun = true;
+
+        $this->isLoading = false;
+
+        // Send notification
+        $failCount = $this->summary['fail'] ?? 0;
+        $warnCount = $this->summary['warn'] ?? 0;
+
+        if ($failCount > 0) {
+            Notification::make()
+                ->title('Reverb Health Check')
+                ->body("{$failCount} check(s) failed. View details for more information.")
+                ->danger()
+                ->send();
+        } elseif ($warnCount > 0) {
+            Notification::make()
+                ->title('Reverb Health Check')
+                ->body("All checks passed with {$warnCount} warning(s).")
+                ->warning()
+                ->send();
+        } else {
+            Notification::make()
+                ->title('Reverb Health Check')
+                ->body('All checks passed successfully!')
+                ->success()
+                ->send();
+        }
     }
 
     public function getHealthStatus(): string
