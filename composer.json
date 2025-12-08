@@ -1,0 +1,55 @@
+{
+    "name": "bitsoftsolutions/filament-reverb-doctor",
+    "description": "A Filament 3.x plugin for Laravel Reverb Doctor - Visual dashboard for WebSocket diagnostics",
+    "keywords": [
+        "laravel",
+        "filament",
+        "reverb",
+        "websocket",
+        "diagnostics",
+        "health-check",
+        "dashboard",
+        "plugin"
+    ],
+    "homepage": "https://github.com/bitsoftsol/filament-reverb-doctor",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Hafiz Siddiq",
+            "email": "hafiz@bitsoftsolutions.com",
+            "homepage": "https://bitsoftsolutions.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "filament/filament": "^3.0",
+        "bitsoftsolutions/laravel-reverb-doctor": "^1.0",
+        "illuminate/contracts": "^10.0|^11.0|^12.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.0|^9.0|^10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bitsoftsolutions\\FilamentReverbDoctor\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Bitsoftsolutions\\FilamentReverbDoctor\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Bitsoftsolutions\\FilamentReverbDoctor\\FilamentReverbDoctorServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
