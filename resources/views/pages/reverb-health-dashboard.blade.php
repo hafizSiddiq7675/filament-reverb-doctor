@@ -2,31 +2,31 @@
     <div class="space-y-6">
         {{-- Summary Cards --}}
         @if($hasRun)
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
                 <x-filament::section>
                     <div class="text-center">
-                        <div class="text-3xl font-bold text-success-600 dark:text-success-400">{{ $summary['pass'] ?? 0 }}</div>
+                        <div class="text-2xl font-bold text-success-600 dark:text-success-400">{{ $summary['pass'] ?? 0 }}</div>
                         <div class="text-sm text-gray-500 dark:text-gray-400">Passed</div>
                     </div>
                 </x-filament::section>
 
                 <x-filament::section>
                     <div class="text-center">
-                        <div class="text-3xl font-bold text-danger-600 dark:text-danger-400">{{ $summary['fail'] ?? 0 }}</div>
+                        <div class="text-2xl font-bold text-danger-600 dark:text-danger-400">{{ $summary['fail'] ?? 0 }}</div>
                         <div class="text-sm text-gray-500 dark:text-gray-400">Failed</div>
                     </div>
                 </x-filament::section>
 
                 <x-filament::section>
                     <div class="text-center">
-                        <div class="text-3xl font-bold text-warning-600 dark:text-warning-400">{{ $summary['warn'] ?? 0 }}</div>
+                        <div class="text-2xl font-bold text-warning-600 dark:text-warning-400">{{ $summary['warn'] ?? 0 }}</div>
                         <div class="text-sm text-gray-500 dark:text-gray-400">Warnings</div>
                     </div>
                 </x-filament::section>
 
                 <x-filament::section>
                     <div class="text-center">
-                        <div class="text-3xl font-bold text-gray-600 dark:text-gray-400">{{ $summary['skip'] ?? 0 }}</div>
+                        <div class="text-2xl font-bold text-gray-600 dark:text-gray-400">{{ $summary['skip'] ?? 0 }}</div>
                         <div class="text-sm text-gray-500 dark:text-gray-400">Skipped</div>
                     </div>
                 </x-filament::section>
